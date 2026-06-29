@@ -127,16 +127,16 @@ export const MAX_SCORE = QUESTIONS.slice(0, 7).reduce(
 // ---- Cart links — fill these in with your actual Nueva Life share-cart URLs ----
 export const CART_LINKS: Record<string, string> = {
   // Nueva Body only
-  body: "https://nuevalife.com/share-cart?h=BODY_ONLY",
+  body: "https://nuevalife.com/share-cart?h=3a41c621-8d10-4b49-bd00-21d57f1dde0e",
   // Nueva Nitro by flavor
-  nitro_grape: "https://nuevalife.com/share-cart?h=NITRO_GRAPE",
-  nitro_lemon_lime: "https://nuevalife.com/share-cart?h=NITRO_LEMONLIME",
-  nitro_black_cherry: "https://nuevalife.com/share-cart?h=NITRO_BLACKCHERRY",
+  nitro_grape: "https://nuevalife.com/share-cart?h=a23c201d-72aa-4e01-b35b-a8d85f2412c0",
+  nitro_lemon_lime: "https://nuevalife.com/share-cart?h=f172ef93-605f-4762-b8f2-cbcf7234a250",
+  nitro_black_cherry: "https://nuevalife.com/share-cart?h=9a7f7d2b-d1a6-4075-acb9-dca9245ce517",
   nitro_any: "https://nuevalife.com/share-cart?h=a544df40-ffb0-4cb4-bf01-5913b8735b68",
   // Bundles (Body + Nitro)
-  bundle_grape: "https://nuevalife.com/share-cart?h=BUNDLE_GRAPE",
-  bundle_lemon_lime: "https://nuevalife.com/share-cart?h=BUNDLE_LEMONLIME",
-  bundle_black_cherry: "https://nuevalife.com/share-cart?h=BUNDLE_BLACKCHERRY",
+  bundle_grape: "https://nuevalife.com/share-cart?h=10e2d475-2ff8-47fe-8c10-7f7faa2e89fb",
+  bundle_lemon_lime: "https://nuevalife.com/share-cart?h=6a61e1db-c344-40e4-b6a1-402386a2e06a",
+  bundle_black_cherry: "https://nuevalife.com/share-cart?h=e878a61e-281e-46a8-8384-c9453281732f",
   bundle_any: "https://nuevalife.com/share-cart?h=a544df40-ffb0-4cb4-bf01-5913b8735b68",
 };
 

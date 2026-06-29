@@ -12,7 +12,7 @@ export default function QuizIntro({ onStart }: { onStart: () => void }) {
       <header className="container flex items-center gap-2.5 pt-7">
         <img src={LOGO} alt="" className="h-9 w-9" />
         <span className="font-display text-xl font-600 tracking-tight text-ink">
-          Ember &amp; Reset
+          Erin Iannarelli
         </span>
       </header>
 
@@ -48,7 +48,7 @@ export default function QuizIntro({ onStart }: { onStart: () => void }) {
           <p className="mt-7 max-w-md text-lg leading-relaxed text-ink/80">
             Find out what your body{" "}
             <span className="font-display italic">actually</span> needs — not
-            another tip to breathe more. Answer 7 quick questions and get a
+            another tip to breathe more. Answer 10 quick questions and get a
             personalized read on your nervous system, plus the exact tools to
             start feeling like yourself again.
           </p>
@@ -66,7 +66,7 @@ export default function QuizIntro({ onStart }: { onStart: () => void }) {
               <Clock className="h-4 w-4" /> Takes ~2 minutes
             </span>
             <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-            <span>7 questions</span>
+            <span>10 questions</span>
           </div>
         </div>
 

@@ -4,8 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  DESIGN: "Dusk Restoration" — warm editorial / modern apothecary.
-  Palette: cream paper base, clay terracotta (signature), sage green, espresso ink.
+  DESIGN: "Lavender Spa" — calm, feminine, serene.
+  Palette: soft white base, lavender/lilac (signature), sage green, deep plum ink.
   Fonts: Fraunces (display serif voice) + Public Sans (humanist body/UI).
   Motion: slow, soft, reassuring. ease-out cross-fades, gentle drift.
 */
@@ -35,13 +35,17 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-clay: var(--clay);
-  --color-clay-deep: var(--clay-deep);
+  --color-lavender: var(--lavender);
+  --color-lavender-deep: var(--lavender-deep);
+  --color-lilac: var(--lilac);
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-ink: var(--ink);
   --color-paper: var(--paper);
-  --color-ochre: var(--ochre);
+
+  /* keep clay aliases pointing to lavender so existing component classes still work */
+  --color-clay: var(--lavender);
+  --color-clay-deep: var(--lavender-deep);
 
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
@@ -53,34 +57,38 @@
 :root {
   --radius: 1rem;
 
-  /* Brand palette */
-  --paper: oklch(0.957 0.018 76);        /* #F6F0E8 warm cream */
-  --clay: oklch(0.595 0.115 42);          /* #B8694B clay terracotta */
-  --clay-deep: oklch(0.49 0.105 40);      /* deeper clay */
-  --sage: oklch(0.62 0.038 130);          /* #7C8B6F sage */
-  --sage-deep: oklch(0.46 0.035 132);     /* deep eucalyptus */
-  --ink: oklch(0.285 0.018 60);           /* #3A3128 espresso ink */
-  --ochre: oklch(0.74 0.10 72);           /* muted ochre accent */
+  /* Brand palette — Lavender Spa */
+  --paper: oklch(0.975 0.008 290);         /* near-white with lavender tint */
+  --lavender: oklch(0.68 0.10 295);        /* medium lavender / signature */
+  --lavender-deep: oklch(0.52 0.12 295);   /* deeper purple for hover/active */
+  --lilac: oklch(0.90 0.05 295);           /* pale lilac for backgrounds */
+  --sage: oklch(0.62 0.038 150);           /* soft sage green */
+  --sage-deep: oklch(0.46 0.035 150);      /* deep eucalyptus */
+  --ink: oklch(0.26 0.04 295);             /* deep plum-black for text */
+
+  /* clay aliases — components use --clay/--clay-deep, we remap to lavender */
+  --clay: var(--lavender);
+  --clay-deep: var(--lavender-deep);
 
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: oklch(0.985 0.012 80);
+  --card: oklch(0.99 0.005 290);
   --card-foreground: var(--ink);
-  --popover: oklch(0.985 0.012 80);
+  --popover: oklch(0.99 0.005 290);
   --popover-foreground: var(--ink);
-  --primary: var(--clay);
-  --primary-foreground: oklch(0.97 0.015 80);
-  --secondary: oklch(0.91 0.022 95);
+  --primary: var(--lavender);
+  --primary-foreground: oklch(0.99 0.005 290);
+  --secondary: oklch(0.93 0.028 290);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.92 0.018 85);
-  --muted-foreground: oklch(0.48 0.022 60);
+  --muted: oklch(0.93 0.018 290);
+  --muted-foreground: oklch(0.50 0.04 290);
   --accent: var(--sage);
-  --accent-foreground: oklch(0.97 0.015 80);
+  --accent-foreground: oklch(0.99 0.005 290);
   --destructive: oklch(0.577 0.18 27);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.86 0.022 80);
-  --input: oklch(0.86 0.022 80);
-  --ring: var(--clay);
+  --border: oklch(0.88 0.025 290);
+  --input: oklch(0.88 0.025 290);
+  --ring: var(--lavender);
 }
 
 @layer base {
@@ -91,10 +99,10 @@
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    /* subtle paper grain */
+    /* subtle lavender grain */
     background-image:
-      radial-gradient(oklch(0.595 0.115 42 / 0.04) 1px, transparent 1px),
-      radial-gradient(oklch(0.46 0.035 132 / 0.035) 1px, transparent 1px);
+      radial-gradient(oklch(0.68 0.10 295 / 0.04) 1px, transparent 1px),
+      radial-gradient(oklch(0.62 0.038 150 / 0.03) 1px, transparent 1px);
     background-size: 22px 22px, 22px 22px;
     background-position: 0 0, 11px 11px;
   }
@@ -131,16 +139,15 @@
     .container { padding-left: 2rem; padding-right: 2rem; max-width: 1180px; }
   }
 
-  /* Grain overlay element */
   .grain::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 50;
-    opacity: 0.5;
+    opacity: 0.35;
     mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
   }
 }
 

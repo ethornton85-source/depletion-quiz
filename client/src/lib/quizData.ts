@@ -2,11 +2,15 @@
 // See quiz-spec.md for the source-of-truth.
 
 export type StateTag = "wired" | "flat" | "drained";
+export type Flavor = "grape" | "lemon-lime" | "black-cherry" | "any";
+export type ProductOpenness = "yes" | "maybe" | "no";
 
 export interface Option {
   label: string;
   points: number;
   tag?: StateTag;
+  flavor?: Flavor;
+  productOpen?: ProductOpenness;
 }
 
 export interface Question {
@@ -82,12 +86,68 @@ export const QUESTIONS: Question[] = [
       { label: "I can't remember feeling any other way", points: 2 },
     ],
   },
+  {
+    id: 8,
+    prompt: "What's your hardest moment in the transition from work to home?",
+    options: [
+      { label: "Walking in the door — I come in tense and can't decompress", points: 1, tag: "wired" },
+      { label: "Getting off the couch — I'm so flat I can barely engage", points: 1, tag: "flat" },
+      { label: "I'm physically there but mentally I've already checked out", points: 2, tag: "drained" },
+      { label: "Most days the transition feels okay", points: 0 },
+    ],
+  },
+  {
+    id: 9,
+    prompt: "Are you open to exploring products that support your nervous system and energy recovery?",
+    helper: "No pressure either way — this just helps personalize your results.",
+    options: [
+      { label: "Yes, I'm open to whatever helps", points: 0, productOpen: "yes" },
+      { label: "Maybe — tell me more first", points: 0, productOpen: "maybe" },
+      { label: "I prefer strategies only for now", points: 0, productOpen: "no" },
+    ],
+  },
+  {
+    id: 10,
+    prompt: "Hydrogen water supports cellular energy without stimulants or a crash. If it felt right for you, which flavor sounds most appealing?",
+    helper: "Nueva Nitro comes in three flavors — pick your vibe.",
+    options: [
+      { label: "🍇 Grape", points: 0, flavor: "grape" },
+      { label: "🍋 Lemon Lime", points: 0, flavor: "lemon-lime" },
+      { label: "🍒 Black Cherry", points: 0, flavor: "black-cherry" },
+      { label: "I'd try anything", points: 0, flavor: "any" },
+    ],
+  },
 ];
 
-export const MAX_SCORE = QUESTIONS.reduce(
+export const MAX_SCORE = QUESTIONS.slice(0, 7).reduce(
   (sum, q) => sum + Math.max(...q.options.map((o) => o.points)),
   0,
 );
+
+// ---- Cart links — fill these in with your actual Nueva Life share-cart URLs ----
+export const CART_LINKS: Record<string, string> = {
+  // Nueva Body only
+  body: "https://nuevalife.com/share-cart?h=BODY_ONLY",
+  // Nueva Nitro by flavor
+  nitro_grape: "https://nuevalife.com/share-cart?h=NITRO_GRAPE",
+  nitro_lemon_lime: "https://nuevalife.com/share-cart?h=NITRO_LEMONLIME",
+  nitro_black_cherry: "https://nuevalife.com/share-cart?h=NITRO_BLACKCHERRY",
+  nitro_any: "https://nuevalife.com/share-cart?h=a544df40-ffb0-4cb4-bf01-5913b8735b68",
+  // Bundles (Body + Nitro)
+  bundle_grape: "https://nuevalife.com/share-cart?h=BUNDLE_GRAPE",
+  bundle_lemon_lime: "https://nuevalife.com/share-cart?h=BUNDLE_LEMONLIME",
+  bundle_black_cherry: "https://nuevalife.com/share-cart?h=BUNDLE_BLACKCHERRY",
+  bundle_any: "https://nuevalife.com/share-cart?h=a544df40-ffb0-4cb4-bf01-5913b8735b68",
+};
+
+export function getCartLink(tier: number, flavor: Flavor): { nitroUrl: string; bodyUrl: string; bundleUrl: string } {
+  const flavorKey = flavor === "lemon-lime" ? "lemon_lime" : flavor === "black-cherry" ? "black_cherry" : flavor;
+  return {
+    nitroUrl: CART_LINKS[`nitro_${flavorKey}`] ?? CART_LINKS.nitro_any,
+    bodyUrl: CART_LINKS.body,
+    bundleUrl: CART_LINKS[`bundle_${flavorKey}`] ?? CART_LINKS.bundle_any,
+  };
+}
 
 // ---- Ritual tools ----
 export interface RitualTool {
@@ -143,7 +203,6 @@ export const RITUAL_TOOLS: RitualTool[] = [
 ];
 
 export function pickTools(tagCounts: Record<StateTag, number>, count = 4): RitualTool[] {
-  // dominant tag = most-selected; tie favors order wired > drained > flat
   const order: StateTag[] = ["wired", "drained", "flat"];
   const dominant = order.reduce((best, t) =>
     tagCounts[t] > tagCounts[best] ? t : best,
@@ -151,37 +210,8 @@ export function pickTools(tagCounts: Record<StateTag, number>, count = 4): Ritua
 
   const primary = RITUAL_TOOLS.filter((t) => t.forTags.includes(dominant));
   const rest = RITUAL_TOOLS.filter((t) => !t.forTags.includes(dominant));
-  const ordered = [...primary, ...rest];
-  return ordered.slice(0, count);
+  return [...primary, ...rest].slice(0, count);
 }
-
-// ---- Products (Tier 2 & 3) ----
-export interface Product {
-  name: string;
-  tagline: string;
-  description: string;
-}
-
-export const PRODUCTS: Product[] = [
-  {
-    name: "Hydrogen Water",
-    tagline: "The daily reset for tired cells",
-    description:
-      "Supports your cells' own antioxidant defenses and helps your mitochondria run cleaner — so the energy you make actually feels like energy.",
-  },
-  {
-    name: "Alcitonine Complex",
-    tagline: "Rebuilding the baseline",
-    description:
-      "A targeted compound that supports mitochondrial restoration — helping repair the machinery that's been running on fumes.",
-  },
-  {
-    name: "SLU-PP-332 + 5-Amino-1MQ",
-    tagline: "Teaching your body to make energy again",
-    description:
-      "These compounds support mitochondrial biogenesis and NAD+ metabolism — in plain terms, they help your body rebuild its own capacity to produce natural energy, instead of borrowing it from stress hormones.",
-  },
-];
 
 // ---- Tiers ----
 export type TierId = 1 | 2 | 3;
@@ -192,9 +222,10 @@ export interface Tier {
   range: [number, number];
   headline: string;
   intro: string;
-  body: string[]; // paragraphs
+  body: string[];
   toolsLead: string;
-  showProducts: boolean;
+  showNitro: boolean;
+  showBody: boolean;
   productsLead?: string;
   primaryCta: { label: string; kind: "guide" | "products" };
   secondaryCta?: { label: string; kind: "guide" | "products" };
@@ -210,10 +241,11 @@ export const TIERS: Tier[] = [
     intro: "The good news: your body still has reserves.",
     body: [
       "What you're feeling is real, but it's situational. You haven't burned through your foundation — you've just been stuck in 'on' for too long without a clean way to power down.",
-      "What you need most right now is a reliable transition ritual: a way to shift out of work mode *before* you walk through the door, so the day doesn't follow you inside. Here's a protocol built from your answers.",
+      "What you need most right now is a reliable transition ritual: a way to shift out of work mode before you walk through the door, so the day doesn't follow you inside. Here's a protocol built from your answers.",
     ],
     toolsLead: "Your custom transition protocol",
-    showProducts: false,
+    showNitro: false,
+    showBody: false,
     primaryCta: { label: "Download the Nervous System Reset Guide", kind: "guide" },
     gaugeLabel: "Reserves intact",
   },
@@ -225,31 +257,34 @@ export const TIERS: Tier[] = [
     intro: "And that's a deeper problem than any single ritual can fix.",
     body: [
       "The transition ritual below will help, and you should absolutely use it tonight. But here's the honest part: at this level, your mitochondria — the parts of your cells that produce natural energy — have been depleted.",
-      "To keep you upright, your body learned to substitute stress hormones like cortisol. That's *why* nothing feels restorative anymore: you're running the engine on the emergency reserve. You can't ritual your way out of a cellular deficit.",
-      "So this is a two-part answer. Use the protocol tonight to get relief — and start giving your body the raw materials to rebuild its baseline over time.",
+      "To keep you upright, your body learned to substitute stress hormones like cortisol. That's why nothing feels restorative anymore: you're running the engine on the emergency reserve.",
+      "Use the protocol tonight to get relief — and give your body the raw materials to rebuild its baseline over time.",
     ],
     toolsLead: "For tonight: your transition protocol",
-    showProducts: true,
+    showNitro: true,
+    showBody: false,
     productsLead: "Over time: rebuilding your baseline",
-    primaryCta: { label: "Explore the products", kind: "products" },
+    primaryCta: { label: "Get the products", kind: "products" },
     secondaryCta: { label: "Download the Reset Guide", kind: "guide" },
     gaugeLabel: "Running on cortisol",
   },
   {
     id: 3,
     name: "Hitting a Wall",
-    range: [11, 14],
+    range: [11, 20],
     headline: "Your body is telling you something important. This goes beyond stress management.",
     intro: "What you're describing isn't burnout in the pop-culture sense.",
     body: [
       "It's your nervous system running on fumes because your body has depleted the raw materials it needs to produce natural energy. Cortisol and adrenaline have been filling the gap — but they were never meant to be your primary fuel source.",
-      "Rituals and mindset shifts help, and I'll give you those — they're real and they matter. But honestly? They won't rebuild what's been depleted at the cellular level. That's where targeted support comes in.",
+      "Rituals and mindset shifts help, and I'll give you those — they're real and they matter. But they won't rebuild what's been depleted at the cellular level. That's where targeted support comes in.",
       "Your body knows how to regulate itself. It just needs the raw materials to do it. Start there, and use the ritual tools as supportive practice while your baseline comes back online.",
+      "This is not medical advice. If you're concerned about your health, please speak with a clinician you trust — what you're experiencing warrants real attention.",
     ],
     toolsLead: "Supportive practice (use these too)",
-    showProducts: true,
+    showNitro: true,
+    showBody: true,
     productsLead: "Where to actually start: rebuilding the raw materials",
-    primaryCta: { label: "Explore the products", kind: "products" },
+    primaryCta: { label: "Get the full bundle", kind: "products" },
     secondaryCta: { label: "Download the Reset Guide", kind: "guide" },
     gaugeLabel: "Running on empty",
   },

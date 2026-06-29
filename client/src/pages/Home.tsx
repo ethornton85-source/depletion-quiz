@@ -1,12 +1,10 @@
-/* DESIGN: Dusk Restoration — warm editorial apothecary.
-   Single-page quiz state machine: intro -> questions -> email gate -> result. */
+/* Single-page quiz state machine: intro -> questions -> email gate -> result. */
 import { useState } from "react";
-import { toast } from "sonner";
 import QuizIntro from "@/components/QuizIntro";
 import QuizQuestion from "@/components/QuizQuestion";
 import EmailGate from "@/components/EmailGate";
 import QuizResult from "@/components/QuizResult";
-import { QUESTIONS, type Option, type StateTag } from "@/lib/quizData";
+import { QUESTIONS, type Option, type StateTag, type Flavor, type ProductOpenness } from "@/lib/quizData";
 
 type Stage = "intro" | "quiz" | "gate" | "result";
 
@@ -14,6 +12,8 @@ interface Answer {
   points: number;
   label: string;
   tag?: StateTag;
+  flavor?: Flavor;
+  productOpen?: ProductOpenness;
 }
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
     const q = QUESTIONS[current];
     setAnswers((prev) => ({
       ...prev,
-      [q.id]: { points: opt.points, label: opt.label, tag: opt.tag },
+      [q.id]: { points: opt.points, label: opt.label, tag: opt.tag, flavor: opt.flavor, productOpen: opt.productOpen },
     }));
     if (current < QUESTIONS.length - 1) {
       setCurrent((c) => c + 1);
@@ -47,32 +47,45 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const score = Object.values(answers).reduce((s, a) => s + a.points, 0);
+  // Score is only from questions 1-7 (the depletion questions)
+  const score = Object.entries(answers)
+    .filter(([id]) => Number(id) <= 7)
+    .reduce((s, [, a]) => s + a.points, 0);
+
   const tagCounts: Record<StateTag, number> = { wired: 0, flat: 0, drained: 0 };
   Object.values(answers).forEach((a) => {
     if (a.tag) tagCounts[a.tag] += 1;
   });
 
-  function handleGate(data: { firstName: string; email: string }) {
+  const flavor: Flavor = (Object.values(answers).find((a) => a.flavor)?.flavor) ?? "any";
+  const productOpen: ProductOpenness = (Object.values(answers).find((a) => a.productOpen)?.productOpen) ?? "maybe";
+
+  async function handleGate(data: { firstName: string; email: string }) {
     setFirstName(data.firstName);
-    // In production: POST to your ESP/CRM here.
+
+    // Determine dominant tag
+    const tagOrder: StateTag[] = ["wired", "drained", "flat"];
+    const dominantTag = tagOrder.reduce((best, t) =>
+      tagCounts[t] > tagCounts[best] ? t : best, tagOrder[0]);
+
+    // Fire-and-forget — we don't block the UI on this
+    fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: data.firstName,
+        email: data.email,
+        score,
+        tier: score <= 5 ? 1 : score <= 10 ? 2 : 3,
+        tierName: score <= 5 ? "Situationally Depleted" : score <= 10 ? "Chronically Running on Empty" : "Hitting a Wall",
+        dominantTag,
+        openToProducts: productOpen,
+        flavorChoice: flavor,
+      }),
+    }).catch(() => {/* silently ignore — don't block the user */});
+
     setStage("result");
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-  }
-
-  function handleCta(kind: "guide" | "products") {
-    if (kind === "guide") {
-      toast.success("Your Reset Guide is on its way", {
-        description: `We've sent the full guide to your inbox${
-          firstName ? `, ${firstName}` : ""
-        }. Check your email in a moment.`,
-      });
-    } else {
-      toast("Connect your store here", {
-        description:
-          "Link this button to your product/shop page when you embed the quiz.",
-      });
-    }
   }
 
   return (
@@ -98,8 +111,9 @@ export default function Home() {
           firstName={firstName}
           score={score}
           tagCounts={tagCounts}
+          flavor={flavor}
+          productOpen={productOpen}
           onRestart={restart}
-          onCta={handleCta}
         />
       )}
     </div>

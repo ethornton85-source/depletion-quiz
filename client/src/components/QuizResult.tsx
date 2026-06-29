@@ -191,7 +191,10 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
         )}
 
         {/* Guide CTA */}
-        <section className="anim-rise mt-10 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ animationDelay: "300ms" }}>
+        <section className="anim-rise mt-10 flex flex-col gap-3" style={{ animationDelay: "300ms" }}>
+          <p className="text-center text-sm text-ink/60">
+            Calm your nervous system on the drive home — free strategies for a smoother work-to-home transition.
+          </p>
           <a
             href="/reset-guide.pdf"
             target="_blank"
@@ -199,7 +202,7 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
             className="press inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-lavender px-7 py-4 text-base font-semibold text-white shadow-lg shadow-lavender/25 hover:bg-lavender-deep"
           >
             <Download className="h-5 w-5" />
-            Download the Nervous System Reset Guide
+            Download the Post-Shift Reset Guide
           </a>
         </section>
 

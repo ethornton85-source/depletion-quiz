@@ -193,7 +193,7 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
         {/* Guide CTA */}
         <section className="anim-rise mt-10 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ animationDelay: "300ms" }}>
           <a
-            href="https://nuevalife.com/share-cart?h=a544df40-ffb0-4cb4-bf01-5913b8735b68"
+            href="/reset-guide.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="press inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-lavender px-7 py-4 text-base font-semibold text-white shadow-lg shadow-lavender/25 hover:bg-lavender-deep"

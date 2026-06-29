@@ -60,7 +60,7 @@ export default function Home() {
   const flavor: Flavor = (Object.values(answers).find((a) => a.flavor)?.flavor) ?? "any";
   const productOpen: ProductOpenness = (Object.values(answers).find((a) => a.productOpen)?.productOpen) ?? "maybe";
 
-  async function handleGate(data: { firstName: string; email: string }) {
+  async function handleGate(data: { firstName: string; email: string; phone: string; country: string }) {
     setFirstName(data.firstName);
 
     // Determine dominant tag
@@ -75,6 +75,8 @@ export default function Home() {
       body: JSON.stringify({
         firstName: data.firstName,
         email: data.email,
+        phone: data.phone,
+        country: data.country,
         score,
         tier: score <= 5 ? 1 : score <= 10 ? 2 : 3,
         tierName: score <= 5 ? "Situationally Depleted" : score <= 10 ? "Chronically Running on Empty" : "Hitting a Wall",

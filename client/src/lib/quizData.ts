@@ -262,7 +262,7 @@ export const TIERS: Tier[] = [
     ],
     toolsLead: "For tonight: your transition protocol",
     showNitro: true,
-    showBody: false,
+    showBody: true,
     productsLead: "Over time: rebuilding your baseline",
     primaryCta: { label: "Get the products", kind: "products" },
     secondaryCta: { label: "Download the Reset Guide", kind: "guide" },

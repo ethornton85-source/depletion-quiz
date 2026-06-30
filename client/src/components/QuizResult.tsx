@@ -110,8 +110,11 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
             <h3 className="font-display text-xl font-semibold text-ink mb-1">
               {tier.productsLead}
             </h3>
-            <p className="mb-6 max-w-xl font-display text-base italic text-ink/70">
+            <p className="mb-2 max-w-xl font-display text-base italic text-ink/70">
               Your body knows how to regulate itself — it just needs the raw materials to do it.
+            </p>
+            <p className="mb-6 max-w-xl text-sm text-lavender-deep font-semibold">
+              ✦ Best option: use both together for full nervous system + cellular recovery.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">

@@ -124,23 +124,25 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
                   <span className="text-xs font-semibold uppercase tracking-[0.12em] text-sage-deep">
                     Gentle energy without the crash
                   </span>
-                  <p className="mt-1.5 font-display text-lg font-semibold leading-tight text-ink">
-                    Nueva Nitro
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-lavender-deep">
-                    {flavor !== "any" ? `${flavorLabel} flavor` : "3 flavors available"}
-                  </p>
+                  <a
+                    href="/nueva-nitro-info.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 font-display text-lg font-semibold leading-tight text-lavender-deep hover:underline"
+                  >
+                    Nueva Nitro {flavor !== "any" ? `— ${flavorLabel}` : ""}
+                  </a>
+                  <p className="mt-1 text-xs font-medium text-ink/50 italic">Click name for full product info ↗</p>
                   <p className="mt-2 text-sm leading-relaxed text-ink/75">
-                    Molecular hydrogen + L-Citrulline + natural green tea caffeine. Supports cellular energy, circulation, and focus — without overstimulation or a crash. Perfect for the flat or wired mom who needs a lift that won't push her over the edge.
+                    Molecular hydrogen + L-Citrulline + natural green tea caffeine. Supports cellular energy, circulation, and focus — without overstimulation or a crash.
                   </p>
                   <a
                     href={nitroUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="press mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-lavender px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-lavender/25 hover:bg-lavender-deep"
+                    className="press mt-4 inline-flex items-center justify-center gap-2 rounded-full border border-lavender px-4 py-2 text-sm font-semibold text-lavender-deep hover:bg-lavender/10"
                   >
-                    {flavor !== "any" ? `Get ${flavorLabel}` : "Shop Nueva Nitro"}
-                    <ExternalLink className="h-4 w-4" />
+                    Get Nueva Nitro <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </div>
               )}
@@ -151,23 +153,25 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
                   <span className="text-xs font-semibold uppercase tracking-[0.12em] text-sage-deep">
                     Cellular restoration
                   </span>
-                  <p className="mt-1.5 font-display text-lg font-semibold leading-tight text-ink">
+                  <a
+                    href="/nueva-body-info.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 font-display text-lg font-semibold leading-tight text-lavender-deep hover:underline"
+                  >
                     Nueva Body
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-lavender-deep">
-                    Cellular Mitochondrial Metabolic Reset
-                  </p>
+                  </a>
+                  <p className="mt-1 text-xs font-medium text-ink/50 italic">Click name for full product info ↗</p>
                   <p className="mt-2 text-sm leading-relaxed text-ink/75">
-                    5-Amino-1MQ + SLU-PP-332 — supports mitochondrial biogenesis and NAD+ metabolism. Helps rebuild your body's capacity to produce real energy instead of borrowing it from stress hormones. Stimulant-free. 3rd party lab tested.
+                    5-Amino-1MQ + SLU-PP-332 — supports mitochondrial biogenesis and NAD+ metabolism. Helps rebuild your body's capacity to produce real energy. Stimulant-free. 3rd party lab tested.
                   </p>
                   <a
                     href={bodyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="press mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-lavender px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-lavender/25 hover:bg-lavender-deep"
+                    className="press mt-4 inline-flex items-center justify-center gap-2 rounded-full border border-lavender px-4 py-2 text-sm font-semibold text-lavender-deep hover:bg-lavender/10"
                   >
-                    Shop Nueva Body
-                    <ExternalLink className="h-4 w-4" />
+                    Get Nueva Body <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </div>
               )}
@@ -180,9 +184,9 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
                   href={bundleUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="press inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-lavender bg-white px-7 py-3.5 text-base font-semibold text-lavender-deep shadow-sm hover:bg-lavender/8"
+                  className="press inline-flex w-full items-center justify-center gap-2 rounded-full bg-lavender px-7 py-4 text-lg font-bold text-white shadow-lg shadow-lavender/30 hover:bg-lavender-deep"
                 >
-                  Get the full bundle (Nitro + Body)
+                  Get the Full Bundle — Nitro + Body
                   <ExternalLink className="h-5 w-5" />
                 </a>
                 <p className="mt-2 text-center text-xs text-ink/50">

@@ -184,7 +184,13 @@ function buildEmailHtml(opts: {
       <p style="margin:24px 0 14px;font-weight:600;color:#3d2a55;font-size:16px;">Your custom transition protocol</p>
       ${toolsHtml}
       ${productsHtml}
-      <p style="margin-top:32px;color:#8a7a9e;font-size:13px;">— Erin</p>
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e7defa;">
+        <p style="margin:0 0 8px;font-weight:600;color:#3d2a55;font-size:15px;">What's coming next for you</p>
+        <p style="margin:0 0 12px;color:#5a4a6e;font-size:14px;line-height:1.6;">You'll be hearing from me over the next few days with more ways to support you through this. I don't take up space in your inbox without a reason — everything I send is practical and worth your time.</p>
+        <p style="margin:0 0 4px;color:#5a4a6e;font-size:14px;line-height:1.6;"><strong>Tomorrow:</strong> I'm going to share my own story — how I went through this exact kind of depletion and why I believe it's so important to take it seriously now, before it takes more from you than it already has.</p>
+        <p style="margin-top:12px;color:#5a4a6e;font-size:14px;line-height:1.6;">Keep an eye out. I think it'll resonate.</p>
+      </div>
+      <p style="margin-top:24px;color:#8a7a9e;font-size:13px;">— Erin</p>
     </div>
   </div>`;
 }

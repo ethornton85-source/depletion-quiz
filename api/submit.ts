@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
-const GHL_FORM_ID = "2dAAKmViTN9IiQhBtY56";
 const GHL_LOCATION_ID = "7ftOvgxcZuwC2hykF1WU";
-const GHL_FORM_URL = `https://link.awesomecrm.com/widget/form/${GHL_FORM_ID}`;
+const GHL_API_KEY = "pit-d15a1ec4-4437-42a5-b44d-90d91fd117f5";
+const GHL_API_BASE = "https://services.leadconnectorhq.com";
 
 type StateTag = "wired" | "flat" | "drained";
 type Flavor = "grape" | "lemon-lime" | "black-cherry" | "any";
@@ -192,6 +192,11 @@ function buildEmailHtml(opts: {
         <p style="margin-top:12px;color:#5a4a6e;font-size:14px;line-height:1.6;">Keep an eye out. I think it'll resonate.</p>
       </div>
       <p style="margin-top:24px;color:#8a7a9e;font-size:13px;">— Erin</p>
+      <p style="margin-top:20px;padding-top:16px;border-top:1px solid #e7defa;font-size:11.5px;color:#b0a0c8;text-align:center;">
+        You're receiving this because you took the How Depleted Are You Really? quiz.<br/>
+        If you'd rather not hear from me, no worries at all —
+        <a href="mailto:ethornton85@gmail.com?subject=Unsubscribe&body=Please unsubscribe me from your email list." style="color:#9a7fc9;">click here to unsubscribe</a>.
+      </p>
     </div>
   </div>`;
 }
@@ -209,27 +214,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  // Submit to GHL form server-side (avoids browser CORS issues)
+  // Create/update contact in AwesomeCRM via API and apply tags
   try {
     const { phone = "", country = "" } = req.body;
-    const formData = new URLSearchParams();
-    formData.append("first_name", firstName);
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("country", country);
-    formData.append("formId", GHL_FORM_ID);
-    formData.append("location_id", GHL_LOCATION_ID);
+    const tags = [
+      "quiz-lead",
+      `depletion-tier-${tier}`,
+      `ns-${dominantTag}`,
+      openToProducts !== "no" ? "product-open" : "product-no",
+      flavorChoice !== "any" ? `flavor-${flavorChoice}` : "flavor-open",
+    ];
 
-    const ghlRes = await fetch(GHL_FORM_URL, {
+    const contactRes = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GHL_API_KEY}`,
+        "Version": "2021-07-28",
+      },
+      body: JSON.stringify({
+        locationId: GHL_LOCATION_ID,
+        firstName,
+        email,
+        phone,
+        country,
+        tags,
+        customFields: [
+          { key: "depletion_tier", field_value: tierName },
+          { key: "nervous_system_type", field_value: dominantTag },
+          { key: "flavor_choice", field_value: flavorChoice },
+        ],
+      }),
     });
-    if (!ghlRes.ok) {
-      console.error("GHL form error:", ghlRes.status, await ghlRes.text());
+
+    if (!contactRes.ok) {
+      console.error("GHL contact upsert error:", contactRes.status, await contactRes.text());
+    } else {
+      console.log("GHL contact created/updated successfully");
     }
   } catch (err) {
-    console.error("GHL form submit error:", err);
+    console.error("GHL API error:", err);
   }
 
   // Send personalized results email via Resend + notify Erin

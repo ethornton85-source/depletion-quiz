@@ -120,6 +120,9 @@ export default function Home() {
             <p className="mt-3 text-ink/70 leading-relaxed">
               Check your email — I've sent you your personalized depletion results, your nervous system reset protocol, and everything you need to start feeling better tonight.
             </p>
+            <p className="mt-3 text-sm text-ink/50">
+              Don't see it? Check your spam or promotions folder and move it to your inbox so you don't miss what's coming next.
+            </p>
             <p className="mt-4 text-ink/70 leading-relaxed">
               And keep an eye out tomorrow — I'm sharing something personal about why I believe this matters so much, and why now is the right time to take it seriously.
             </p>

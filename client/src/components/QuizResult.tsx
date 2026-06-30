@@ -110,11 +110,11 @@ export default function QuizResult({ firstName, score, tagCounts, flavor, produc
             <h3 className="font-display text-xl font-semibold text-ink mb-1">
               {tier.productsLead}
             </h3>
-            <p className="mb-2 max-w-xl font-display text-base italic text-ink/70">
-              Your body knows how to regulate itself — it just needs the raw materials to do it.
+            <p className="mb-3 max-w-xl text-[1rem] leading-relaxed text-ink/80">
+              Depending on where you're at, you might be able to start with just the Nueva Nitro — the hydrogen water — and the reset protocol, and feel a real difference. That said, I personally felt the biggest shift when I used both together, and I recommend the bundle for anyone who's serious about rebuilding. Click each product name for the full info, then decide what feels right for you.
             </p>
-            <p className="mb-6 max-w-xl text-sm text-lavender-deep font-semibold">
-              ✦ Best option: use both together for full nervous system + cellular recovery.
+            <p className="mb-5 max-w-xl text-sm text-ink/50 italic">
+              This is not medical advice. Please share this information with your doctor and make the decision that's best for your health.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">

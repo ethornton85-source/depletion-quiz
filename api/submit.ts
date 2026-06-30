@@ -103,7 +103,7 @@ const TIER_CONTENT: Record<number, { name: string; headline: string; body: strin
       "To keep you upright, your body learned to substitute stress hormones like cortisol. That's why nothing feels restorative anymore — you're running the engine on the emergency reserve.",
     ],
     showNitro: true,
-    showBody: false,
+    showBody: true,
   },
   3: {
     name: "Hitting a Wall",
@@ -225,7 +225,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       flavorChoice !== "any" ? `flavor-${flavorChoice}` : "flavor-open",
     ];
 
-    const contactRes = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
+    const contactRes = await fetch(`${GHL_API_BASE}/contacts/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -239,18 +239,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         phone,
         country,
         tags,
-        customFields: [
-          { key: "depletion_tier", field_value: tierName },
-          { key: "nervous_system_type", field_value: dominantTag },
-          { key: "flavor_choice", field_value: flavorChoice },
-        ],
       }),
     });
 
+    const ghlBody = await contactRes.text();
     if (!contactRes.ok) {
-      console.error("GHL contact upsert error:", contactRes.status, await contactRes.text());
+      console.error("GHL contact error:", contactRes.status, ghlBody);
     } else {
-      console.log("GHL contact created/updated successfully");
+      console.log("GHL contact created:", ghlBody.slice(0, 100));
     }
   } catch (err) {
     console.error("GHL API error:", err);

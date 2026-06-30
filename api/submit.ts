@@ -229,7 +229,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       flavorChoice !== "any" ? `flavor-${flavorChoice}` : "flavor-open",
     ];
 
-    const contactRes = await fetch(`${GHL_API_BASE}/contacts/`, {
+    const contactRes = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +250,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!contactRes.ok) {
       console.error("GHL contact error:", contactRes.status, ghlBody);
     } else {
-      console.log("GHL contact created:", ghlBody.slice(0, 100));
+      console.log("GHL contact upserted:", ghlBody.slice(0, 100));
     }
   } catch (err) {
     console.error("GHL API error:", err);

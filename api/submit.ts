@@ -146,31 +146,35 @@ function buildEmailHtml(opts: {
     .map((p) => `<p style="margin:0 0 14px;color:#4a3a5e;font-size:15px;line-height:1.65;">${p}</p>`)
     .join("");
 
+  const SITE_URL = "https://depletion-quiz.vercel.app";
+
   let productsHtml = "";
   if (wantsProducts && (content.showNitro || content.showBody)) {
     const nitroCard = content.showNitro
-      ? `<a href="${nitroUrl}" style="display:block;margin-bottom:12px;padding:16px 18px;background:#ffffff;border-radius:14px;border:1px solid #e7defa;text-decoration:none;">
-          <p style="margin:0 0 4px;font-weight:600;color:#7c4fd6;font-size:15px;">Nueva Nitro — ${flavorLabel}</p>
-          <p style="margin:0;color:#5a4a6e;font-size:13.5px;">Hydrogen water for cellular energy, without the stimulant crash. →</p>
-        </a>`
+      ? `<div style="margin-bottom:14px;padding:16px 18px;background:#ffffff;border-radius:14px;border:1px solid #e7defa;">
+          <a href="${SITE_URL}/nueva-nitro-info.png" target="_blank" style="display:block;margin-bottom:6px;font-weight:600;color:#7c4fd6;font-size:15px;text-decoration:none;">Nueva Nitro — ${flavorLabel} ↗ <span style="font-weight:400;font-size:12px;color:#9a7fc9;">(tap for full product info)</span></a>
+          <p style="margin:0 0 8px;color:#5a4a6e;font-size:13.5px;">Molecular hydrogen water for cellular energy, circulation, and focus — without overstimulation or a crash.</p>
+          <a href="${nitroUrl}" target="_blank" style="display:inline-block;padding:7px 16px;border:1px solid #7c4fd6;border-radius:999px;color:#7c4fd6;font-size:12.5px;font-weight:600;text-decoration:none;">Get Nueva Nitro →</a>
+        </div>`
       : "";
     const bodyCard = content.showBody
-      ? `<a href="${bodyUrl}" style="display:block;margin-bottom:12px;padding:16px 18px;background:#ffffff;border-radius:14px;border:1px solid #e7defa;text-decoration:none;">
-          <p style="margin:0 0 4px;font-weight:600;color:#7c4fd6;font-size:15px;">Nueva Body</p>
-          <p style="margin:0;color:#5a4a6e;font-size:13.5px;">Mitochondrial support to help rebuild your cellular energy baseline. →</p>
-        </a>`
+      ? `<div style="margin-bottom:14px;padding:16px 18px;background:#ffffff;border-radius:14px;border:1px solid #e7defa;">
+          <a href="${SITE_URL}/nueva-body-info.png" target="_blank" style="display:block;margin-bottom:6px;font-weight:600;color:#7c4fd6;font-size:15px;text-decoration:none;">Nueva Body ↗ <span style="font-weight:400;font-size:12px;color:#9a7fc9;">(tap for full product info)</span></a>
+          <p style="margin:0 0 8px;color:#5a4a6e;font-size:13.5px;">Mitochondrial support to help rebuild your body's capacity to produce real energy. Stimulant-free. 3rd party lab tested.</p>
+          <a href="${bodyUrl}" target="_blank" style="display:inline-block;padding:7px 16px;border:1px solid #7c4fd6;border-radius:999px;color:#7c4fd6;font-size:12.5px;font-weight:600;text-decoration:none;">Get Nueva Body →</a>
+        </div>`
       : "";
     const bundleCta = content.showNitro && content.showBody
-      ? `<a href="${bundleUrl}" style="display:inline-block;margin-top:8px;padding:14px 28px;background:#7c4fd6;color:#ffffff;border-radius:999px;text-decoration:none;font-weight:600;font-size:14.5px;">Get the full bundle →</a>`
+      ? `<a href="${bundleUrl}" target="_blank" style="display:block;margin-top:10px;padding:16px 28px;background:#7c4fd6;color:#ffffff;border-radius:999px;text-decoration:none;font-weight:700;font-size:16px;text-align:center;">Get the Full Bundle — Nitro + Body →</a>`
       : "";
 
     productsHtml = `
       <div style="margin-top:28px;padding-top:24px;border-top:1px solid #e7defa;">
-        <p style="margin:0 0 14px;font-weight:600;color:#3d2a55;font-size:16px;">Where to start rebuilding your baseline</p>
+        <p style="margin:0 0 8px;font-weight:600;color:#3d2a55;font-size:16px;">Where to start rebuilding your baseline</p>
+        <p style="margin:0 0 14px;color:#5a4a6e;font-size:14px;line-height:1.6;">Depending on where you're at, you might feel a real difference starting with just the Nueva Nitro. That said, I personally felt the biggest shift when I used both together — and I recommend the bundle for anyone serious about rebuilding. Tap each product name for the full info, then decide what feels right for you. And as always, this is not medical advice — please share with your doctor before starting anything new.</p>
         ${nitroCard}
         ${bodyCard}
         ${bundleCta}
-        ${content.showNitro && content.showBody ? `<p style="margin-top:10px;font-size:11.5px;color:#8a7a9e;">This is not medical advice. Consult your doctor before starting any new supplement.</p>` : ""}
       </div>`;
   }
 

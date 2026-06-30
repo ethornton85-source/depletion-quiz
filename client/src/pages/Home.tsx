@@ -109,14 +109,31 @@ export default function Home() {
       {stage === "gate" && <EmailGate onSubmit={handleGate} />}
 
       {stage === "result" && (
-        <QuizResult
-          firstName={firstName}
-          score={score}
-          tagCounts={tagCounts}
-          flavor={flavor}
-          productOpen={productOpen}
-          onRestart={restart}
-        />
+        <div className="container flex min-h-screen max-w-md flex-col items-center justify-center py-12">
+          <div className="anim-rise w-full rounded-[2rem] border border-border bg-card p-8 shadow-2xl shadow-ink/10 text-center sm:p-10">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-lavender/15 text-3xl">
+              💌
+            </div>
+            <h2 className="font-display text-2xl font-semibold leading-tight text-ink">
+              {firstName ? `${firstName}, your results are on their way!` : "Your results are on their way!"}
+            </h2>
+            <p className="mt-3 text-ink/70 leading-relaxed">
+              Check your email — I've sent you your personalized depletion results, your nervous system reset protocol, and everything you need to start feeling better tonight.
+            </p>
+            <p className="mt-4 text-ink/70 leading-relaxed">
+              And keep an eye out tomorrow — I'm sharing something personal about why I believe this matters so much, and why now is the right time to take it seriously.
+            </p>
+            <p className="mt-6 font-display text-base italic text-lavender-deep">
+              — Erin
+            </p>
+            <button
+              onClick={restart}
+              className="press mt-8 inline-flex items-center gap-2 text-sm font-semibold text-ink/50 hover:text-lavender-deep"
+            >
+              ↩ Retake the quiz
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

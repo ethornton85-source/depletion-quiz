@@ -1,8 +1,9 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
-const GHL_WEBHOOK_URL =
-  "https://services.leadconnectorhq.com/hooks/7ftOvgxcZuwC2hykF1WU/webhook-trigger/4890a48c-2aec-4c37-ae26-93ed964f2f8c";
+const GHL_FORM_ID = "2dAAKmViTN9IiQhBtY56";
+const GHL_LOCATION_ID = "7ftOvgxcZuwC2hykF1WU";
+const GHL_FORM_URL = `https://link.awesomecrm.com/widget/form/${GHL_FORM_ID}`;
 
 type StateTag = "wired" | "flat" | "drained";
 type Flavor = "grape" | "lemon-lime" | "black-cherry" | "any";
@@ -208,49 +209,55 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  // Forward lead to GHL for CRM storage / nurture sequence
+  // Submit to GHL form server-side (avoids browser CORS issues)
   try {
-    const payload = {
-      firstName,
-      email,
-      first_name: firstName,
-      score,
-      tier,
-      tierName,
-      dominantTag,
-      openToProducts,
-      flavorChoice,
-      tags: [
-        `depletion-tier-${tier}`,
-        `ns-${dominantTag}`,
-        openToProducts !== "no" ? "product-open" : "product-no",
-        flavorChoice !== "any" ? `flavor-${flavorChoice}` : "flavor-open",
-      ],
-    };
+    const { phone = "", country = "" } = req.body;
+    const formData = new URLSearchParams();
+    formData.append("first_name", firstName);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("country", country);
+    formData.append("formId", GHL_FORM_ID);
+    formData.append("location_id", GHL_LOCATION_ID);
 
-    const response = await fetch(GHL_WEBHOOK_URL, {
+    const ghlRes = await fetch(GHL_FORM_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
     });
-
-    if (!response.ok) {
-      console.error("GHL webhook error:", response.status, await response.text());
+    if (!ghlRes.ok) {
+      console.error("GHL form error:", ghlRes.status, await ghlRes.text());
     }
   } catch (err) {
-    console.error("GHL forward error:", err);
+    console.error("GHL form submit error:", err);
   }
 
-  // Send personalized results email via Resend
+  // Send personalized results email via Resend + notify Erin
   try {
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const html = buildEmailHtml({ firstName, tier, dominantTag, flavorChoice, openToProducts });
+
+      // Email to the lead
       await resend.emails.send({
         from: "Erin Iannarelli <onboarding@resend.dev>",
         to: email,
         subject: `${firstName}, here are your depletion quiz results`,
         html,
+      });
+
+      // Notification email to Erin
+      await resend.emails.send({
+        from: "Depletion Quiz <onboarding@resend.dev>",
+        to: "ethornton85@gmail.com",
+        subject: `New quiz lead: ${firstName} — ${tierName}`,
+        html: `<p><strong>New quiz submission!</strong></p>
+          <p><strong>Name:</strong> ${firstName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Tier:</strong> ${tierName}</p>
+          <p><strong>Nervous system type:</strong> ${dominantTag}</p>
+          <p><strong>Flavor choice:</strong> ${flavorChoice}</p>
+          <p><strong>Open to products:</strong> ${openToProducts}</p>`,
       });
     } else {
       console.error("RESEND_API_KEY not set — skipping personalized email");
